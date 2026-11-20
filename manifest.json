@@ -1,0 +1,21 @@
+{
+  "name": "Mahroli Boutique & Desi Market",
+  "short_name": "Mahroli Store",
+  "description": "Meesho-style online shopping storefront + ladies tailoring order & billing PWA.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf6f2",
+  "theme_color": "#5c2d4b",
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

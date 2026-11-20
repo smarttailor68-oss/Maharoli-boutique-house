@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="36" fill="#5c2d4b"/>
+  <circle cx="96" cy="82" r="42" fill="none" stroke="#ffd166" stroke-width="6"/>
+  <text x="96" y="92" font-family="Arial, sans-serif" font-size="34" font-weight="bold" fill="#ffffff" text-anchor="middle">MBH</text>
+  <text x="96" y="152" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#ffd166" text-anchor="middle">STORE &amp; TAILOR</text>
+</svg>

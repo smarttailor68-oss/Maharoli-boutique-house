@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mahroli Boutique &amp; Desi Market — Store + Tailoring App</title>
+  <meta name="theme-color" content="#5c2d4b" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand-wrap">
+      <div class="brand-badge">MBH</div>
+      <div>
+        <h1 id="headerBrandTitle">Mahroli Boutique &amp; Store</h1>
+        <p class="subtitle">Online Shopping Store + Ladies' Tailoring Dashboard</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="cartToggleBtn" class="btn btn-cart" type="button">
+        Cart (<span id="cartCount">0</span>)
+      </button>
+      <button id="installBtn" class="btn btn-outline hidden" type="button">Install App</button>
+    </div>
+  </header>
+
+  <nav class="tab-bar" role="tablist">
+    <button class="tab-btn active" data-tab="store-front" role="tab" aria-selected="true">🛍️ Shop Store</button>
+    <button class="tab-btn" data-tab="manage-products" role="tab" aria-selected="false">📦 Add / Manage Products</button>
+    <button class="tab-btn" data-tab="store-orders" role="tab" aria-selected="false">🚚 Store Orders (<span id="storeOrderCount">0</span>)</button>
+    <button class="tab-btn" data-tab="tailoring-order" role="tab" aria-selected="false">✂️ + Tailoring Order</button>
+    <button class="tab-btn" data-tab="tailoring-list" role="tab" aria-selected="false">📋 Tailoring List (<span id="tailorOrderCount">0</span>)</button>
+    <button class="tab-btn" data-tab="upi-setup" role="tab" aria-selected="false">⚙️ UPI &amp; Delivery</button>
+  </nav>
+
+  <main class="container">
+    <!-- TAB 1: MEESHO-STYLE CUSTOMER STOREFRONT -->
+    <section id="store-front" class="tab-panel active">
+      <div class="store-banner card">
+        <div>
+          <h2>Apni Dukaan — Direct Online Shopping</h2>
+          <p class="muted">Handmade Crochet, Boutique Suits, Kurtis &amp; Daily Essentials • Local Delivery &amp; Pan-India Shipping</p>
+        </div>
+        <div class="store-filters">
+          <input type="search" id="storeSearch" placeholder="Search kurtis, crochet keychains, suits..." />
+          <select id="storeCategoryFilter">
+            <option value="ALL">All Categories</option>
+            <option value="Crochet & Handmade">Crochet &amp; Handmade</option>
+            <option value="Ladies Suits & Kurtis">Ladies Suits &amp; Kurtis</option>
+            <option value="Blouse & Dress Material">Blouse &amp; Dress Material</option>
+            <option value="Local Daily Essentials">Local Daily Essentials</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="storeCatalogGrid" class="product-grid"></div>
+    </section>
+
+    <!-- TAB 2: SELLER CATALOG MANAGER (ADD / EDIT PRODUCTS) -->
+    <section id="manage-products" class="tab-panel">
+      <form id="productForm" class="card">
+        <h2>Add New Product to Store Catalog</h2>
+        <div class="grid-3">
+          <div class="form-group">
+            <label for="prodTitle">Product Name *</label>
+            <input type="text" id="prodTitle" required placeholder="e.g., Handmade Sunflower Crochet Keychain" />
+          </div>
+          <div class="form-group">
+            <label for="prodCategory">Category</label>
+            <select id="prodCategory">
+              <option value="Crochet & Handmade">Crochet &amp; Handmade</option>
+              <option value="Ladies Suits & Kurtis">Ladies Suits &amp; Kurtis</option>
+              <option value="Blouse & Dress Material">Blouse &amp; Dress Material</option>
+              <option value="Local Daily Essentials">Local Daily Essentials</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="prodStock">Stock Qty</label>
+            <input type="number" id="prodStock" min="0" value="10" />
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label for="prodPrice">Selling Price (₹) *</label>
+            <input type="number" id="prodPrice" min="1" required placeholder="e.g., 149" />
+          </div>
+          <div class="form-group">
+            <label for="prodMrp">MRP / Strike Price (₹)</label>
+            <input type="number" id="prodMrp" min="0" placeholder="e.g., 249" />
+          </div>
+          <div class="form-group">
+            <label for="prodSizes">Sizes / Variants (comma separated)</label>
+            <input type="text" id="prodSizes" placeholder="e.g., Free Size or S, M, L, XL" value="Free Size" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="prodDesc">Product Description</label>
+            <textarea id="prodDesc" rows="2" placeholder="Fabric details, handmade yarn quality, wash care, delivery info..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="prodPhoto">Product Photo</label>
+            <input type="file" id="prodPhoto" accept="image/*" />
+            <div id="prodPhotoPreviewWrap" class="photo-preview hidden">
+              <img id="prodPhotoPreview" alt="Product preview" />
+              <button type="button" id="clearProdPhotoBtn" class="btn btn-small btn-danger">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Publish Product to Store</button>
+      </form>
+
+      <div class="card">
+        <h3>Your Listed Products (<span id="adminProdCount">0</span>)</h3>
+        <div id="adminProductsList" class="orders-grid"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: E-COMMERCE STORE ORDERS -->
+    <section id="store-orders" class="tab-panel">
+      <div class="toolbar card">
+        <input type="search" id="searchStoreOrders" placeholder="Search store orders by customer, phone, or order ID..." />
+        <select id="filterStoreOrderStatus">
+          <option value="ALL">All Store Orders</option>
+          <option value="New Order">New Order</option>
+          <option value="Packed">Packed</option>
+          <option value="Shipped / Out for Delivery">Shipped / Out for Delivery</option>
+          <option value="Delivered">Delivered</option>
+        </select>
+      </div>
+      <div id="storeOrdersContainer" class="orders-grid"></div>
+    </section>
+
+    <!-- TAB 4: NEW TAILORING ORDER -->
+    <section id="tailoring-order" class="tab-panel">
+      <form id="orderForm" class="card">
+        <h2>New Ladies' Tailoring Order</h2>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="customerName">Customer Name *</label>
+            <input type="text" id="customerName" required placeholder="e.g., Sunita Devi" />
+          </div>
+          <div class="form-group">
+            <label for="customerPhone">WhatsApp Number (10 digits) *</label>
+            <input type="tel" id="customerPhone" required pattern="[0-9]{10}" maxlength="10" placeholder="e.g., 9876543210" />
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label for="garmentType">Garment Type</label>
+            <select id="garmentType">
+              <option value="Suit / Salwar Kameez">Suit / Salwar Kameez</option>
+              <option value="Designer Blouse">Designer Blouse</option>
+              <option value="Kurti / Tunic">Kurti / Tunic</option>
+              <option value="Lehenga Choli">Lehenga Choli</option>
+              <option value="Bulk Kurti Job Work">Bulk Kurti Job Work</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="deliveryDate">Delivery Date *</label>
+            <input type="date" id="deliveryDate" required />
+          </div>
+          <div class="form-group">
+            <label for="orderStatus">Order Status</label>
+            <select id="orderStatus">
+              <option value="Measurement Taken">Measurement Taken</option>
+              <option value="Cutting">Cutting</option>
+              <option value="Stitching">Stitching</option>
+              <option value="Ready for Delivery">Ready for Delivery</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+          </div>
+        </div>
+
+        <h3>Measurements (in inches)</h3>
+        <div class="grid-4">
+          <div class="form-group"><label for="mLength">Length</label><input type="number" step="0.1" id="mLength" placeholder="0.0" /></div>
+          <div class="form-group"><label for="mChest">Chest / Bust</label><input type="number" step="0.1" id="mChest" placeholder="0.0" /></div>
+          <div class="form-group"><label for="mWaist">Waist</label><input type="number" step="0.1" id="mWaist" placeholder="0.0" /></div>
+          <div class="form-group"><label for="mHip">Hip</label><input type="number" step="0.1" id="mHip" placeholder="0.0" /></div>
+          <div class="form-group"><label for="mShoulder">Shoulder</label><input type="number" step="0.1" id="mShoulder" placeholder="0.0" /></div>
+          <div class="form-group"><label for="mSleeve">Sleeve Length</label><input type="number" step="0.1" id="mSleeve" placeholder="0.0" /></div>
+          <div class="form-group"><label for="mFrontNeck">Front Neck</label><input type="number" step="0.1" id="mFrontNeck" placeholder="0.0" /></div>
+          <div class="form-group"><label for="mBackNeck">Back Neck</label><input type="number" step="0.1" id="mBackNeck" placeholder="0.0" /></div>
+        </div>
+
+        <div class="form-group">
+          <label for="stitchNotes">Design &amp; Stitching Notes</label>
+          <textarea id="stitchNotes" rows="2" placeholder="Piping, dori/latkan, lining, sleeve pattern, etc."></textarea>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="fabricPhoto">Fabric / Reference Photo</label>
+            <input type="file" id="fabricPhoto" accept="image/*" />
+            <div id="photoPreviewWrap" class="photo-preview hidden">
+              <img id="photoPreview" alt="Fabric preview" />
+              <button type="button" id="clearPhotoBtn" class="btn btn-small btn-danger">Remove Photo</button>
+            </div>
+          </div>
+
+          <div class="billing-box">
+            <h3>Itemized Billing (INR ₹)</h3>
+            <div class="form-group">
+              <label for="stitchingCharge">Stitching Charge (₹)</label>
+              <input type="number" min="0" step="1" id="stitchingCharge" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="extraCharge">Extra / Design / Material Charge (₹)</label>
+              <input type="number" min="0" step="1" id="extraCharge" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="advancePaid">Advance Paid (₹)</label>
+              <input type="number" min="0" step="1" id="advancePaid" value="0" />
+            </div>
+            <div class="bill-summary">
+              <div><span>Total Bill:</span> <strong id="calcTotal">₹0</strong></div>
+              <div><span>Advance:</span> <strong id="calcAdvance">₹0</strong></div>
+              <div class="balance-row"><span>Balance Due:</span> <strong id="calcBalance">₹0</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Tailoring Order &amp; Bill</button>
+          <button type="reset" id="resetFormBtn" class="btn btn-secondary">Clear Form</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- TAB 5: TAILORING ORDERS LIST -->
+    <section id="tailoring-list" class="tab-panel">
+      <div class="toolbar card">
+        <input type="search" id="searchOrders" placeholder="Search tailoring orders by customer, phone, or ID..." />
+        <select id="filterStatus">
+          <option value="ALL">All Statuses</option>
+          <option value="Measurement Taken">Measurement Taken</option>
+          <option value="Cutting">Cutting</option>
+          <option value="Stitching">Stitching</option>
+          <option value="Ready for Delivery">Ready for Delivery</option>
+          <option value="Delivered">Delivered</option>
+        </select>
+      </div>
+      <div id="ordersContainer" class="orders-grid"></div>
+    </section>
+
+    <!-- TAB 6: UPI, PINCODES & SETTINGS -->
+    <section id="upi-setup" class="tab-panel">
+      <div class="card">
+        <h2>Store, Delivery Pincodes &amp; UPI QR Settings</h2>
+        <p class="muted">Configure your store name, allowed local delivery pincodes, delivery fee, and UPI ID for instant QR bills &amp; checkout.</p>
+
+        <div class="grid-2">
+          <div>
+            <div class="form-group">
+              <label for="boutiqueName">Store / Boutique Name</label>
+              <input type="text" id="boutiqueName" value="Mahroli Boutique & Desi Market" />
+            </div>
+            <div class="form-group">
+              <label for="boutiqueLocation">Address / Contact Note</label>
+              <input type="text" id="boutiqueLocation" value="Mahroli & Reengus, Sikar, Rajasthan" />
+            </div>
+            <div class="form-group">
+              <label for="sellerWhatsapp">Your Seller WhatsApp Number (with 91, e.g. 919876543210)</label>
+              <input type="tel" id="sellerWhatsapp" placeholder="e.g., 919876543210" />
+            </div>
+            <div class="form-group">
+              <label for="allowedPincodes">Allowed Delivery Pincodes (comma separated, leave blank for All India)</label>
+              <input type="text" id="allowedPincodes" value="332404, 332402, 332406" placeholder="e.g., 332404, 332402" />
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="deliveryCharge">Delivery Fee (₹)</label>
+                <input type="number" id="deliveryCharge" min="0" value="30" />
+              </div>
+              <div class="form-group">
+                <label for="freeDeliveryAbove">Free Delivery Above (₹)</label>
+                <input type="number" id="freeDeliveryAbove" min="0" value="499" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="upiIdInput">UPI ID (VPA)</label>
+              <input type="text" id="upiIdInput" placeholder="e.g., yourname@okaxis or 9876543210@ybl" />
+            </div>
+            <div class="form-group">
+              <label for="upiPayeeName">UPI Payee Name</label>
+              <input type="text" id="upiPayeeName" value="Mahroli Boutique House" />
+            </div>
+            <button type="button" id="saveSettingsBtn" class="btn btn-primary">Save All Settings</button>
+            <span id="settingsSavedMsg" class="status-msg"></span>
+          </div>
+
+          <div class="qr-card">
+            <h3>Live UPI Payment QR Preview</h3>
+            <p class="muted small-text">Works with GPay, PhonePe, Paytm, BHIM UPI, Navi, etc.</p>
+            <div id="qrContainer" class="qr-box"></div>
+            <p id="upiUriPreview" class="upi-uri"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- CART & CHECKOUT DRAWER/MODAL -->
+  <div id="cartModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="cartModalTitle">Shopping Cart &amp; Checkout</h2>
+        <button type="button" id="closeCartBtn" class="btn btn-small btn-secondary">Close</button>
+      </div>
+
+      <div id="cartItemsList"></div>
+
+      <form id="checkoutForm" class="checkout-box hidden">
+        <h3>Delivery Details</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="chkName">Full Name *</label>
+            <input type="text" id="chkName" required placeholder="Customer Name" />
+          </div>
+          <div class="form-group">
+            <label for="chkPhone">WhatsApp / Mobile Number *</label>
+            <input type="tel" id="chkPhone" required pattern="[0-9]{10}" maxlength="10" placeholder="10-digit number" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="chkPincode">Delivery Pincode *</label>
+            <input type="text" id="chkPincode" required pattern="[0-9]{6}" maxlength="6" placeholder="e.g., 332404" />
+            <small id="pincodeStatusMsg" class="small-text"></small>
+          </div>
+          <div class="form-group">
+            <label for="chkPaymentMode">Payment Method</label>
+            <select id="chkPaymentMode">
+              <option value="UPI Online Payment">UPI Online Payment (QR / Link)</option>
+              <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="chkAddress">Complete Address (Village / Ward / Landmark) *</label>
+          <textarea id="chkAddress" rows="2" required placeholder="House/Shop no., Village/Colony, Post, Tehsil..."></textarea>
+        </div>
+
+        <div class="bill-summary" id="cartBillSummary"></div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" style="width:100%;">Place Order &amp; Generate Bill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- BILL & WHATSAPP RECEIPT MODAL (FOR BOTH STORE & TAILORING) -->
+  <div id="billModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="billModalTitle">
+    <div class="modal-content">
+      <div class="modal-header no-print">
+        <h2 id="billModalTitle">Invoice &amp; Payment QR</h2>
+        <button type="button" id="closeModalBtn" class="btn btn-small btn-secondary">Close</button>
+      </div>
+      <div id="billPrintableArea" class="bill-paper"></div>
+      <div class="modal-footer no-print">
+        <button type="button" id="printBillBtn" class="btn btn-outline">Print / Save PDF</button>
+        <a id="whatsappShareBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">Send on WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
